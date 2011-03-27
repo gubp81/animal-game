@@ -200,6 +200,15 @@ public class UserInputView
 	}
 	
 	/**
+	 * Called when we need to ask the user a question
+	 * @param question
+	 */
+	public void onQuestion(QuestionModel question)
+	{
+		textLabel.setText(question.getQuestion());
+	}
+	
+	/**
 	 * Called when the program should end, either because
 	 * we ran out of guesses or we got it correct
 	 * @param computer_win True if we guessed correctly, false otherwise
