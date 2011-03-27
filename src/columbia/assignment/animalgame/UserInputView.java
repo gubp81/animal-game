@@ -97,9 +97,9 @@ public class UserInputView
 		try {
 			//yes button gets a thumbs up, no button gets a thumbs down
 		yesButtonImage = ImageIO.read(new BufferedInputStream(
-									new FileInputStream("Data/thumbsup.png")));
+									new FileInputStream("Data/Icons/thumbsup.png")));
 		noButtonImage = ImageIO.read(new BufferedInputStream(
-									new FileInputStream("Data/thumbsdown.png")));
+									new FileInputStream("Data/Icons/thumbsdown.png")));
 		
 		} catch(IOException ioe)
 		{
@@ -136,7 +136,7 @@ public class UserInputView
 		 */
 		try {
 		columbiaImage = ImageIO.read(new BufferedInputStream(
-											new FileInputStream("Data/columbia.png")));
+											new FileInputStream("Data/Icons/columbia.png")));
 		}
 		catch(IOException ioe)
 		{
@@ -153,9 +153,9 @@ public class UserInputView
 		 */
 		try {
 		BufferedImage winImage = ImageIO.read(new BufferedInputStream(
-				new FileInputStream("Data/youwin.png")));
+				new FileInputStream("Data/Icons/youwin.png")));
 		BufferedImage loseImage = ImageIO.read(new BufferedInputStream(
-				new FileInputStream("Data/youlose.png")));
+				new FileInputStream("Data/Icons/youlose.png")));
 		
 		winIcon = new ImageIcon(winImage);
 		loseIcon = new ImageIcon(loseImage);

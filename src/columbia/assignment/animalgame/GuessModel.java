@@ -11,18 +11,26 @@ import java.io.File;
 public class GuessModel
 {
 	private Animal animal;
+	private String NameOfGuess;
+	private String NameOfNextQuestion;
 	
-	public GuessModel(File path, String name)
+	public GuessModel(File path, String name, String NONQ, String NOG)
 	{
 		animal = new Animal(path, name);
+		NameOfNextQuestion = NONQ;
+		NameOfGuess = NOG;
 	}
-	public GuessModel(String path, String name)
+	public GuessModel(String path, String name, String NONQ, String NOG)
 	{
 		animal = new Animal(new File(path), name);
+		NameOfNextQuestion = NONQ;
+		NameOfGuess = NOG;
 	}
 	
 	public File   getpathToTexture()   { return animal.getFile();   }
 	public String getAnimalName()      { return animal.getName();   }
+	public String getNameOfNextQuestion() { return NameOfNextQuestion; }
+	public String getNameOfGuess() { return NameOfGuess; }
 
 }
 
