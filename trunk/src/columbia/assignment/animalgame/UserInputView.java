@@ -43,6 +43,14 @@ public class UserInputView
 	private ImageIcon     winIcon;
 	private ImageIcon     loseIcon;
 	
+	//could use a boolean, but this is more intuitive
+	/** represents the current state of the UI, whether its guessing or asking a question */
+	private static int CURRENT_STATE = 0;
+	private static final int GUESS = 1, QUESTION = 2;
+	
+	private GuessModel    currentGuess    = null;
+	private QuestionModel currentQuestion = null;
+	
 	/**
 	 * CTOR
 	 */
@@ -78,7 +86,28 @@ public class UserInputView
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				Controller.receiveAnswerFromUI(true);
+				if(CURRENT_STATE == 0)
+					System.err.println("ERROR:  CURRENT STATE IS 0");
+				else if(CURRENT_STATE == GUESS)
+				{
+					//this should not happen
+					if(currentGuess == null)
+						throw new NullPointerException("ERROR:  CURRENT STATE IS GUESS BUT currentGuess IS NULL!");
+					
+					Controller.receiveGuessAnswerFromUI(true, currentGuess);
+				}
+				else if(CURRENT_STATE == QUESTION)
+				{
+					if(currentQuestion == null)
+						throw new NullPointerException("ERROR:  CURRENT STATE IS QUESTION BUT currentQuestion IS NULL!");
+					
+					Controller.receiveQuestionAnswerFromUI(true, currentQuestion);
+				}
+				else
+				{
+					//this should never execute
+					System.err.println("ERROR:  UNKNOWN STATE");
+				}
 			}
 		}
 		);
@@ -86,7 +115,21 @@ public class UserInputView
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				Controller.receiveAnswerFromUI(false);
+				if(CURRENT_STATE == 0)
+					System.err.println("ERROR:  CURRENT STATE IS 0");
+				else if(CURRENT_STATE == GUESS)
+				{
+					Controller.receiveGuessAnswerFromUI(false, currentGuess);
+				}
+				else if(CURRENT_STATE == QUESTION)
+				{
+					Controller.receiveQuestionAnswerFromUI(false, currentQuestion);
+				}
+				else
+				{
+					//this should never execute
+					System.err.println("ERROR:  UNKNOWN STATE");
+				}
 			}
 		}
 		);
@@ -197,6 +240,10 @@ public class UserInputView
 	{
 		String animal_name = guess.getAnimalName();
 		textLabel.setText("<HTML><p style = 'font-size:18px'>Is it a " + animal_name + "?</p></HTML>");
+		//set state
+		CURRENT_STATE = GUESS;
+		currentQuestion = null;
+		currentGuess = guess;
 	}
 	
 	/**
@@ -206,6 +253,11 @@ public class UserInputView
 	public void onQuestion(QuestionModel question)
 	{
 		textLabel.setText(question.getQuestion());
+		//set state
+		CURRENT_STATE = QUESTION;
+		currentGuess = null;
+		currentQuestion = question;
+		
 	}
 	
 	/**
@@ -216,12 +268,17 @@ public class UserInputView
 	public void onProgramEnd(boolean computer_win)
 	{
 		if(computer_win)
+		{
 			JOptionPane.showMessageDialog(uipanel, "GAME OVER - YOU WIN!", "VICTORY",
 					JOptionPane.INFORMATION_MESSAGE, winIcon);
+		}
 		else
+		{
 			JOptionPane.showMessageDialog(uipanel, "Better luck next time", "Defeat...",
 					JOptionPane.INFORMATION_MESSAGE, loseIcon);
+		}
 		System.exit(0);
+
 	}
 }
 
