@@ -1,6 +1,7 @@
 package columbia.assignment.animalgame;
 
 
+import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -17,6 +18,9 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.ProgressMonitor;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.BufferUtil;
@@ -33,7 +37,7 @@ public class OpenGLView
 		frame = new JFrame("Lesson01");
 	    GLJPanel gljpanel = new GLJPanel();
 
-	    GLlistener = new OpenGLViewListener(GuessesToLoad);
+	    GLlistener = new OpenGLViewListener(GuessesToLoad, gljpanel);
 	    
 	    gljpanel.addGLEventListener(GLlistener);
 	    frame.add(gljpanel);
@@ -56,6 +60,11 @@ public class OpenGLView
 	public void LoadGuessTexture(GuessModel load)
 	{
 		GLlistener.LoadGuessTexture(load);
+	}
+	
+	public void LoadQuestionTexture()
+	{
+		GLlistener.onQuestion();
 	}
 
 }
@@ -83,16 +92,20 @@ class OpenGLViewListener implements GLEventListener
 	 * The entire array of textures
 	 */
 	private AnimalTexture Animal_Tex_Array[];
+	
+	private GLJPanel panel_reference;
+	
 	/** For performance reasons, you don't want to read the entire file at runtime.
 	 *  This method is for loading all the textures into memory at start time
 	 *  We can pull out the texture we want with a search after when a new
 	 *  texture needs to be displayed
 	 *  */
-	private void LoadAllGuessModelTextures(GuessModel[] guess_array)
+	private void LoadAllGuessModelTextures(GuessModel[] guess_array, GLJPanel panel)
 	{
 		Animal_Tex_Array = new AnimalTexture[guess_array.length];		
 		for(int i = 0; i < guess_array.length; i++)
 		{
+			
 			Texture TEX = loadTexture(guess_array[i].getpathToTexture().toString());
 			String name = guess_array[i].getAnimalName();
 			Animal_Tex_Array[i] = new AnimalTexture(TEX, name);
@@ -100,10 +113,17 @@ class OpenGLViewListener implements GLEventListener
 	}
 	
 	private GuessModel[] guess_model_array;
-	public OpenGLViewListener(GuessModel[] guess_array)
+	public OpenGLViewListener(GuessModel[] guess_array, GLJPanel panel)
 	{
 		Animal_Tex_Array = new AnimalTexture[guess_array.length];
 		guess_model_array = guess_array;
+		panel_reference = panel;
+	}
+	
+	
+	public void onQuestion()
+	{
+		current_Texture = null;
 	}
 	
 	
@@ -242,7 +262,7 @@ class OpenGLViewListener implements GLEventListener
 		//gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE);
 		
 		
-		LoadAllGuessModelTextures(guess_model_array);
+		LoadAllGuessModelTextures(guess_model_array, panel_reference);
 	}
 	
 	private void drawOpenCube(GL gl)
@@ -458,4 +478,55 @@ class AnimalTexture
 		}
 		return null;
 	}
+}
+
+/**
+ * The reason we need our own progress monitor is because
+ * the Java API executes the task in another thread, which is not
+ * possible given that the actual OpenGL texture loading must take place
+ * in the OpenGL initialization function
+ * @author thomas
+ *
+ */
+class LoadTextureProgress implements Runnable
+{
+	private static volatile int progressPercent;
+	private static volatile String frameTitle;
+	private static volatile JLabel progressLabel;
+	private static volatile JFrame frame;
+	public static synchronized void setProgress(int newprogress)
+	{
+		if(progressPercent == 100)
+		{
+			frame.setVisible(false);
+		}
+		progressPercent = newprogress;
+		progressLabel.setText(progressPercent + " percent done.");
+	}
+	
+	LoadTextureProgress(String title)
+	{
+		frameTitle = title;
+	}
+	
+	@Override
+	public void run() 
+	{
+		frame = new JFrame(frameTitle);
+		JPanel content_panel = new JPanel();
+		
+		JLabel totalObjective = new JLabel();
+		progressLabel = new JLabel();
+		
+		totalObjective.setText("Loading Textures");
+		progressLabel.setText("0 percent done.");
+		
+		content_panel.setLayout(new FlowLayout());
+		content_panel.add(totalObjective);
+		content_panel.add(progressLabel);
+		frame.setContentPane(content_panel);
+		frame.pack();
+		frame.setVisible(true);
+	}
+	
 }

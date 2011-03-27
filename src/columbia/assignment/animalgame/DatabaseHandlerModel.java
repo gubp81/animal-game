@@ -130,4 +130,37 @@ public class DatabaseHandlerModel
 		}
 		return null;
 	}
+	
+	public QuestionModel queryForQuestionModelByName(String QUESTION_NAME)
+	{
+		String query = "SELECT Name, Question, NameOfYesGuess, NameOfNoGuess FROM QuestionTable WHERE Name=?";
+		PreparedStatement queryStatement = null;
+		try
+		{
+			queryStatement = databaseConnection.prepareStatement(query);
+			queryStatement.setString(1, QUESTION_NAME);
+			ResultSet rs = queryStatement.executeQuery();
+			String Name = rs.getString("Name");
+			String Question = rs.getString("Question");
+			String NameOfYesGuess = rs.getString("NameOfYesGuess");
+			String NameOfNoGuess = rs.getString("NameOfNoGuess");
+			return new QuestionModel(Name, Question, NameOfYesGuess, NameOfNoGuess);
+		}
+		catch(SQLException sqle)
+		{
+			ErrorHandler.handleException(sqle);
+		}
+		finally
+		{
+			if(queryStatement != null)
+			{
+				try {
+					queryStatement.close();
+				}
+				catch(Throwable t)
+				{ /* ignore */ }
+			}
+		}
+		return null;
+	}
 }
