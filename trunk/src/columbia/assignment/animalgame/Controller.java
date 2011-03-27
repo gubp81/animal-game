@@ -10,13 +10,15 @@ public class Controller
 {
 	private UserInputView UIView;
 	private OpenGLView    GLView;
+	private DatabaseHandlerModel dbHandler;
 	
 	public Controller()
 	{
-		GuessModel[] guesses = new GuessModel[3];
-		guesses[0] = new GuessModel("Data/dog.png", "Dog");
-		guesses[1] = new GuessModel("Data/rabbit.png", "Rabbit");
+		dbHandler = new DatabaseHandlerModel();
 		
+		GuessModel[] guesses = new GuessModel[1];
+		guesses[0] = dbHandler.queryForGuessModelByName("YDogGuess");
+
 		
 		UIView = new UserInputView();
 		UIView.enableButtons();
@@ -24,8 +26,8 @@ public class Controller
 
 		UIView.onGuess(guesses[0]);
 		
-		GLView = new OpenGLView(guesses);
-		//GLView.LoadGuessTexture(guesses[0]);
+		GLView = new OpenGLView(dbHandler.queryForAllGuessModels());
+		GLView.LoadGuessTexture(guesses[0]);
 		
 
 		sendGuessToUI(guesses[1]);

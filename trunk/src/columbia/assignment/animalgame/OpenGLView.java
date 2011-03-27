@@ -143,6 +143,8 @@ class OpenGLViewListener implements GLEventListener
 		
 		//translations so we can see drawing
 		gl.glTranslatef(0, 0, -4);
+		
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 
 		
 		if(LoadTexturePosted == true)
@@ -194,13 +196,18 @@ class OpenGLViewListener implements GLEventListener
 		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
 		
 		gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
-		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);	
+		gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
+		
+		//set the texture mode to decal, so textures are rendered independent of
+		//underlying colors
+		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_DECAL);
 		
 		initVertexArrays();
 		
 		gl.glEnable(GL.GL_TEXTURE_2D);
 
-		question_Texture = loadTexture("Data/question_mark.png");
+		question_Texture = loadTexture("Data/Pictures/question_mark.png");
 		
 		
 		float mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -233,7 +240,6 @@ class OpenGLViewListener implements GLEventListener
 		
 		//gl.glEnable(GL.GL_COLOR_MATERIAL);
 		//gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE);
-		gl.glEnable(GL.GL_NORMAL_ARRAY);
 		
 		
 		LoadAllGuessModelTextures(guess_model_array);
