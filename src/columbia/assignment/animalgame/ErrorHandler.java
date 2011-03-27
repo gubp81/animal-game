@@ -3,6 +3,8 @@ package columbia.assignment.animalgame;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
 
@@ -42,7 +44,8 @@ public class ErrorHandler
 		try {
 		errorFile = new FileWriter(errorFilePath);
 		errorFile.write("CAUGHT EXCEPTION");
-		errorFile.write(message);
+		errorFile.write(getStackTrace(e));
+		
 		} catch(IOException ioe) { }
 		finally { 
 			
@@ -56,5 +59,16 @@ public class ErrorHandler
 
 			
 	}
+	
+	
+	private static String getStackTrace(Throwable t)
+    {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw, true);
+        t.printStackTrace(pw);
+        pw.flush();
+        sw.flush();
+        return sw.toString();
+    }
 
 }
