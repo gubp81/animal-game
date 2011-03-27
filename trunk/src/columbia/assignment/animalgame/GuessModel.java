@@ -26,6 +26,12 @@ public class GuessModel
 
 }
 
+/**
+ * Encapsulates an animal, holding a path to the animal's texture
+ * and the animal's name
+ * @author thomas
+ *
+ */
 class Animal
 {
 	private File   pathToTexture;
