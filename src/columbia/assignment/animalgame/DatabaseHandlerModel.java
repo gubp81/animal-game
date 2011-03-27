@@ -75,10 +75,21 @@ public class DatabaseHandlerModel
 		queryStatement.setString(1, guessName);
 		ResultSet rs = queryStatement.executeQuery();
 		
+		if(rs.isClosed())
+			return null;
+		
+		
 		String Name = rs.getString("Name");
 		String Animal = rs.getString("Animal");
 		String NameOfNextQuestion = rs.getString("NameOfNextQuestion");
 		String Path = rs.getString("Path");
+		//guarantee null instead of an empty string
+		if(NameOfNextQuestion != null)
+		{
+			if(NameOfNextQuestion.equals(""))
+				NameOfNextQuestion = null;
+		}
+		
 		return new GuessModel(Path, Animal, NameOfNextQuestion, Name);
 		}
 		catch(SQLException sqle)
@@ -111,6 +122,12 @@ public class DatabaseHandlerModel
 				String Animal = rs.getString("Animal");
 				String NameOfNextQuestion = rs.getString("NameOfNextQuestion");
 				String Path = rs.getString("Path");
+				//guarantee null instead of an empty string
+				if(NameOfNextQuestion != null)
+				{
+					if(NameOfNextQuestion.equals(""))
+						NameOfNextQuestion = null;
+				}
 				guess_model_vec.addElement(new GuessModel(Path, Animal, NameOfNextQuestion, Name));
 			}
 			guess_model_vec.trimToSize();
@@ -144,6 +161,16 @@ public class DatabaseHandlerModel
 			String Question = rs.getString("Question");
 			String NameOfYesGuess = rs.getString("NameOfYesGuess");
 			String NameOfNoGuess = rs.getString("NameOfNoGuess");
+			if(NameOfYesGuess != null)
+			{
+				if(NameOfYesGuess.equals(""))
+					NameOfYesGuess = null;
+			}
+			if(NameOfNoGuess != null)
+			{
+				if(NameOfNoGuess.equals(""))
+					NameOfNoGuess = null;
+			}
 			return new QuestionModel(Name, Question, NameOfYesGuess, NameOfNoGuess);
 		}
 		catch(SQLException sqle)

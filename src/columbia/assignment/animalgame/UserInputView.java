@@ -237,7 +237,7 @@ public class UserInputView
 	
 	//called when we need to guess
 	public void onGuess(GuessModel guess)
-	{
+	{			
 		String animal_name = guess.getAnimalName();
 		textLabel.setText("<HTML><p style = 'font-size:18px'>Is it a " + animal_name + "?</p></HTML>");
 		//set state
@@ -267,7 +267,7 @@ public class UserInputView
 	 */
 	public void onProgramEnd(boolean computer_win)
 	{
-		if(computer_win)
+		if(!computer_win)
 		{
 			JOptionPane.showMessageDialog(uipanel, "GAME OVER - YOU WIN!", "VICTORY",
 					JOptionPane.INFORMATION_MESSAGE, winIcon);
@@ -278,7 +278,6 @@ public class UserInputView
 					JOptionPane.INFORMATION_MESSAGE, loseIcon);
 		}
 		System.exit(0);
-
 	}
 }
 
