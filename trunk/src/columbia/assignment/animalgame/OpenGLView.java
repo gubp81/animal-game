@@ -25,11 +25,20 @@ import com.sun.opengl.util.BufferUtil;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureIO;
 
+/**
+ * Manages communication with the OpenGL context and window
+ * @author thomas
+ *
+ */
 public class OpenGLView 
 {
 	JFrame frame;
 	OpenGLViewListener GLlistener;
 	
+	/**
+	 * launches the OpenGL window
+	 * @param GuessesToLoad
+	 */
 	public OpenGLView(GuessModel[] GuessesToLoad)
 	{
 		frame = new JFrame("Lesson01");
@@ -55,11 +64,18 @@ public class OpenGLView
 	    animator.start();
 	}
 	
+	/**
+	 * chains down a call to load a GuessModel texture
+	 * @param load
+	 */
 	public void LoadGuessTexture(GuessModel load)
 	{
 		GLlistener.LoadGuessTexture(load);
 	}
 	
+	/**
+	 * chains down a call to load a Question texture
+	 */
 	public void LoadQuestionTexture()
 	{
 		GLlistener.onQuestion();
@@ -392,6 +408,11 @@ class OpenGLViewListener implements GLEventListener
 		texCoords.rewind();
 	}
 	
+	/**
+	 * method to convert a Java float array to a FloatBuffer (Java NIO API)
+	 * @param array
+	 * @return
+	 */
 	private static FloatBuffer FloatArrayToFloatBuffer(float[] array)
 	{
 		FloatBuffer fb = BufferUtil.newFloatBuffer(array.length);
@@ -448,55 +469,4 @@ class AnimalTexture
 		}
 		return null;
 	}
-}
-
-/**
- * The reason we need our own progress monitor is because
- * the Java API executes the task in another thread, which is not
- * possible given that the actual OpenGL texture loading must take place
- * in the OpenGL initialization function
- * @author thomas
- *
- */
-class LoadTextureProgress implements Runnable
-{
-	private static volatile int progressPercent;
-	private static volatile String frameTitle;
-	private static volatile JLabel progressLabel;
-	private static volatile JFrame frame;
-	public static synchronized void setProgress(int newprogress)
-	{
-		if(progressPercent == 100)
-		{
-			frame.setVisible(false);
-		}
-		progressPercent = newprogress;
-		progressLabel.setText(progressPercent + " percent done.");
-	}
-	
-	LoadTextureProgress(String title)
-	{
-		frameTitle = title;
-	}
-	
-	@Override
-	public void run() 
-	{
-		frame = new JFrame(frameTitle);
-		JPanel content_panel = new JPanel();
-		
-		JLabel totalObjective = new JLabel();
-		progressLabel = new JLabel();
-		
-		totalObjective.setText("Loading Textures");
-		progressLabel.setText("0 percent done.");
-		
-		content_panel.setLayout(new FlowLayout());
-		content_panel.add(totalObjective);
-		content_panel.add(progressLabel);
-		frame.setContentPane(content_panel);
-		frame.pack();
-		frame.setVisible(true);
-	}
-	
 }
