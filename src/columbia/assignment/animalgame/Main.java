@@ -29,16 +29,29 @@ public class Main
  */
 class IntroMessage
 {
+	/**
+	 * CTOR
+	 * Creates and displays the welcome message
+	 */
 	public IntroMessage()
 	{
+		//the frame
 		JFrame frame = new JFrame("Welcome");
+		//text display
 		JTextArea textArea = new JTextArea(welcomeMessage);
+		//word wrapping on
 		textArea.setWrapStyleWord(true);
 		textArea.setLineWrap(true);
+		//set it in the frame
 		frame.setContentPane(textArea);
+		//frame dimensions
 		frame.setBounds(new Rectangle(1050, 150, 200, 200));
+		//nonresizable
+		frame.setResizable(false);
+		//show
 		frame.setVisible(true);
 	}
+	/** message to display */
 	private String welcomeMessage =
 		"Welcome to Animal Game, a Columbia Computer Science assignment.  Think of an animal," +
 		" and I will try to guess it.  If I can't guess it with my questions, you win." +
