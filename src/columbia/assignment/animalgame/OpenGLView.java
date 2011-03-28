@@ -175,6 +175,7 @@ class OpenGLViewListener implements GLEventListener
 		}
 		
 
+		//if the current texture is null, load the question texture
 		if(current_Texture == null)
 			question_Texture.bind();
 		else
@@ -185,10 +186,11 @@ class OpenGLViewListener implements GLEventListener
 			gl.glRotatef(yrotate, 0.0f, 1.0f, 0.0f);
 			drawOpenCube(gl);
 		gl.glPopMatrix();
-		//xrotate += 0.07;
+
+		//increase rotation
 		yrotate += 0.05;
-		//zrotate += 0.03;
 	}
+	/** rotation value */
 	private static float yrotate=0;
 
 	@Override
