@@ -14,14 +14,18 @@ public class Controller
 	
 	public Controller()
 	{
+		//initialize the database handler
 		dbHandler = new DatabaseHandlerModel();
 
 		
+		//initialize and show the UI
 		UIView = new UserInputView();
 		UIView.enableButtons();
 		UIView.show();
 
 		
+		//initialize the OpenGL window, passing an array of all GuessModel's
+		//so it can load textures
 		GLView = new OpenGLView(dbHandler.queryForAllGuessModels());
 
 		
@@ -32,21 +36,37 @@ public class Controller
 		
 	}
 	
+	/**
+	 * sends a guess to the UI window
+	 * @param guess
+	 */
 	private static void sendGuessToUI(GuessModel guess)
 	{
 		UIView.onGuess(guess);
 		
 	}
+	
+	/**
+	 * sends a guess to the OpenGL window
+	 * @param guess
+	 */
 	private static void sendGuessToGL(GuessModel guess)
 	{
 		GLView.LoadGuessTexture(guess);
 	}
 	
+	/**
+	 * sends a question to the UI window
+	 * @param question
+	 */
 	private static void sendQuestionToUI(QuestionModel question)
 	{
 		UIView.onQuestion(question);
 	}
 	
+	/**
+	 * sends a question to the OpenGL window
+	 */
 	private static void sendQuestionToGL()
 	{
 		GLView.LoadQuestionTexture();
@@ -60,49 +80,61 @@ public class Controller
 	 */
 	public static void receiveQuestionAnswerFromUI(boolean answer, QuestionModel question)
 	{
+		//if they answered yes...
 		if(answer)
 		{
 			//proceed to the next guess
 			if(question.getNameOfYesGuess() != null)
 			{
+				//query for the next guess
 				GuessModel guess = dbHandler.queryForGuessModelByName(question.getNameOfYesGuess());
+				//and send it to the UI and OpenGL
 				sendGuessToUI(guess);
 				sendGuessToGL(guess);
 			}
 			else
 			{
-				System.err.println("QUESTION IS NULL");
 				UIView.onProgramEnd(answer);
 			}
 		}
+		//if they answered no...
 		else
 		{
 			if(question.getNameOfNoGuess() != null)
 			{
+				//same
 				GuessModel guess = dbHandler.queryForGuessModelByName(question.getNameOfNoGuess());
 				sendGuessToUI(guess);
 				sendGuessToGL(guess);
 			}
 			else
 			{
-				System.err.println("QUESTION IS NULL");
 				UIView.onProgramEnd(answer);
 			}
 		}
 	}
 	
 	
+	/**
+	 * called by UI on receiving an answer
+	 * @param answer
+	 * @param guess
+	 */
 	public static void receiveGuessAnswerFromUI(boolean answer, GuessModel guess)
 	{
+		//if yes...
 		if(answer)
 		{
+			//we guessed correctly and the program ends
 			UIView.onProgramEnd(answer);
 		}
+		//otherwise no
 		else
 		{
+			//get the name of the next question
 			if(guess.getNameOfNextQuestion() != null)
 			{
-				System.err.println("NAME OF NEXT GUESS QUESTION: " + guess.getNameOfNextQuestion());
+				//and send it to the UI
 				UIView.onQuestion(dbHandler.queryForQuestionModelByName(
 										guess.getNameOfNextQuestion()));
 			}
@@ -112,6 +144,7 @@ public class Controller
 			}
 			
 		}
+		//send the question to OpenGL
 		sendQuestionToGL();
 	}
 }

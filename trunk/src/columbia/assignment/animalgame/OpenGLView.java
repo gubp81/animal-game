@@ -245,19 +245,27 @@ class OpenGLViewListener implements GLEventListener
 		gl.glFogf(GL.GL_FOG_END, 3.0f);				// Fog End Depth
 		gl.glEnable(GL.GL_FOG);					// Enables GL_FOG
 		
-		
-		
-		
+		//load all textures
 		LoadAllGuessModelTextures(guess_model_array);
 	}
 	
+	/**
+	 * draw the rotating cube
+	 * @param OpenGL context
+	 */
 	private void drawOpenCube(GL gl)
 	{
+		//send pointers to OpenGL and draw
 		gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, texCoords);
 		gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertices);
 		gl.glDrawArrays(GL.GL_QUADS, 0, 24);
 	}
 	
+	/**
+	 * flips a BufferedImage
+	 * @param unflipped BufferedImage
+	 * @return flipped BufferedImage
+	 */
 	private static BufferedImage flipBufferedImageVertical(BufferedImage inBufferedImage)
 	{ 
         int tWidth = inBufferedImage.getWidth(); 
