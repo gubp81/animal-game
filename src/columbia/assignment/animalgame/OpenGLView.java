@@ -35,7 +35,7 @@ public class OpenGLView
 		frame = new JFrame("Lesson01");
 	    GLJPanel gljpanel = new GLJPanel();
 
-	    GLlistener = new OpenGLViewListener(GuessesToLoad, gljpanel);
+	    GLlistener = new OpenGLViewListener(GuessesToLoad);
 	    
 	    gljpanel.addGLEventListener(GLlistener);
 	    frame.add(gljpanel);
@@ -77,7 +77,6 @@ class OpenGLViewListener implements GLEventListener
 	/** Native IO Buffers used in our Vertex Arrays */
 	private FloatBuffer vertices;
 	private FloatBuffer texCoords;
-	private FloatBuffer normals;
 	
 	/** The default texture to display when asking a question
 	 *  Its not an AnimalTexture because... its not an animal. */
@@ -90,15 +89,13 @@ class OpenGLViewListener implements GLEventListener
 	 * The entire array of textures
 	 */
 	private AnimalTexture Animal_Tex_Array[];
-	
-	private GLJPanel panel_reference;
-	
+		
 	/** For performance reasons, you don't want to read the entire file at runtime.
 	 *  This method is for loading all the textures into memory at start time
 	 *  We can pull out the texture we want with a search after when a new
 	 *  texture needs to be displayed
 	 *  */
-	private void LoadAllGuessModelTextures(GuessModel[] guess_array, GLJPanel panel)
+	private void LoadAllGuessModelTextures(GuessModel[] guess_array)
 	{
 		Animal_Tex_Array = new AnimalTexture[guess_array.length];		
 		for(int i = 0; i < guess_array.length; i++)
@@ -111,14 +108,22 @@ class OpenGLViewListener implements GLEventListener
 	}
 	
 	private GuessModel[] guess_model_array;
-	public OpenGLViewListener(GuessModel[] guess_array, GLJPanel panel)
+	/**
+	 * CTOR
+	 * copies the reference and initializes the array
+	 * @param guess_array
+	 */
+	public OpenGLViewListener(GuessModel[] guess_array)
 	{
 		Animal_Tex_Array = new AnimalTexture[guess_array.length];
 		guess_model_array = guess_array;
-		panel_reference = panel;
 	}
 	
 	
+	/**
+	 * Called when asking a question
+	 * sets current_Texture to false so the question texture will be displayed
+	 */
 	public void onQuestion()
 	{
 		current_Texture = null;
@@ -161,9 +166,6 @@ class OpenGLViewListener implements GLEventListener
 		
 		//translations so we can see drawing
 		gl.glTranslatef(0, 0, -0.7f);
-		
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-
 		
 		if(LoadTexturePosted == true)
 		{
@@ -222,12 +224,17 @@ class OpenGLViewListener implements GLEventListener
 		//underlying colors
 		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_DECAL);
 		
+		//initialize vertex arrays
 		initVertexArrays();
 		
+		//enable 2D texturing
 		gl.glEnable(GL.GL_TEXTURE_2D);
 
+		//load the question texture
 		question_Texture = loadTexture("Data/Pictures/question_mark.png");
 
+		
+		//set up fog effect
 		float fogColor[]= {0.5f, 0.5f, 0.5f, 1.0f};		// Fog Color
 		
 		gl.glFogi(GL.GL_FOG_MODE, GL.GL_LINEAR);		// Fog Mode
@@ -241,7 +248,7 @@ class OpenGLViewListener implements GLEventListener
 		
 		
 		
-		LoadAllGuessModelTextures(guess_model_array, panel_reference);
+		LoadAllGuessModelTextures(guess_model_array);
 	}
 	
 	private void drawOpenCube(GL gl)
