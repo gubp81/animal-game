@@ -13,14 +13,12 @@ import java.nio.FloatBuffer;
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLContext;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.ProgressMonitor;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.BufferUtil;
@@ -162,7 +160,7 @@ class OpenGLViewListener implements GLEventListener
 		gl.glLoadIdentity();
 		
 		//translations so we can see drawing
-		gl.glTranslatef(0, 0, -4);
+		gl.glTranslatef(0, 0, -0.7f);
 		
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 
@@ -191,7 +189,7 @@ class OpenGLViewListener implements GLEventListener
 		yrotate += 0.05;
 		//zrotate += 0.03;
 	}
-	private static float xrotate=0, yrotate=0, zrotate=0;
+	private static float yrotate=0;
 
 	@Override
 	public void displayChanged(GLAutoDrawable auto_drawable, boolean arg1, boolean arg2) {
@@ -216,7 +214,6 @@ class OpenGLViewListener implements GLEventListener
 		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
 		
 		gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
-		gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
 		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
 		
 		//set the texture mode to decal, so textures are rendered independent of
@@ -228,38 +225,18 @@ class OpenGLViewListener implements GLEventListener
 		gl.glEnable(GL.GL_TEXTURE_2D);
 
 		question_Texture = loadTexture("Data/Pictures/question_mark.png");
+
+		float fogColor[]= {0.5f, 0.5f, 0.5f, 1.0f};		// Fog Color
+		
+		gl.glFogi(GL.GL_FOG_MODE, GL.GL_LINEAR);		// Fog Mode
+		gl.glFogfv(GL.GL_FOG_COLOR, FloatArrayToFloatBuffer(fogColor));			// Set Fog Color
+		gl.glFogf(GL.GL_FOG_DENSITY, 0.35f);				// How Dense Will The Fog Be
+		gl.glHint(GL.GL_FOG_HINT, GL.GL_NICEST);			// Fog Hint Value
+		gl.glFogf(GL.GL_FOG_START, 0.0f);				// Fog Start Depth
+		gl.glFogf(GL.GL_FOG_END, 3.0f);				// Fog End Depth
+		gl.glEnable(GL.GL_FOG);					// Enables GL_FOG
 		
 		
-		float mat_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		float mat_shininess[] = { 50.0f };
-		float light_position[] = { 0.0f, 0.0f, -1.0f, 0.0f };
-		
-		float LightAmbient[]= { 0.5f, 0.5f, 0.5f, 1.0f };
-		float LightDiffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };
-		float LightPosition[]= { 0.0f, 0.0f, 2.0f, 1.0f };
-		
-		
-		//float mat_ambiance[] = { 
-		
-		
-		gl.glEnable(GL.GL_LIGHTING);
-		/*
-		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_SPECULAR, 
-											FloatArrayToFloatBuffer(mat_specular));
-		gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_SHININESS, 
-				FloatArrayToFloatBuffer(mat_shininess));
-		
-		gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, 
-						FloatArrayToFloatBuffer(light_position));
-		*/
-		gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, FloatArrayToFloatBuffer(LightAmbient));
-		gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, FloatArrayToFloatBuffer(LightDiffuse));
-		gl.glLightfv(gl.GL_LIGHT0, GL.GL_POSITION, FloatArrayToFloatBuffer(LightPosition));
-		
-		gl.glEnable(GL.GL_LIGHT0);
-		
-		//gl.glEnable(GL.GL_COLOR_MATERIAL);
-		//gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT_AND_DIFFUSE);
 		
 		
 		LoadAllGuessModelTextures(guess_model_array, panel_reference);
@@ -268,7 +245,6 @@ class OpenGLViewListener implements GLEventListener
 	private void drawOpenCube(GL gl)
 	{
 		gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, texCoords);
-		gl.glNormalPointer(GL.GL_FLOAT, 0, normals);
 		gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertices);
 		gl.glDrawArrays(GL.GL_QUADS, 0, 24);
 	}
@@ -368,26 +344,13 @@ class OpenGLViewListener implements GLEventListener
 				0.0f, 1.0f,
 				0.0f, 0.0f,
 				1.0f, 0.0f, 
-				/*
-				1,1,  -1,1,  -1,-1,  1,-1,        // v0-v1-v2-v3
-				1,1,  1,-1,  1,-1,  1,1,        // v0-v3-v4-v5
-			    1,1,  1,1,  -1,1,  -1,1,        // v0-v5-v6-v1
-				-1,1,  -1,1,  -1,-1,  -1,-1,    // v1-v6-v7-v2
-				-1,-1,  1,-1,  1,-1,  -1,-1,    // v7-v4-v3-v2
-				1,-1,  -1,-1,  -1,1,  1,1   // v4-v7-v6-v5
-				*/
+
 		};
 		                                  
 		
 		
 		float java_vertices[] = new float[] {
-				/*1.0f, 0.0f, -1.0f,
-				0.0f, 1.0f, -1.0f,
-				0.0f, 0.0f, -1.0f,
-				
-				1.0f, 0.0f, -1.0f,
-				1.0f, 1.0f, -1.0f,
-				0.0f, 1.0f, -1.0f, */
+
 				// vertex coords array
 				1,1,1,  -1,1,1,  -1,-1,1,  1,-1,1,        // v0-v1-v2-v3
 				1,1,1,  1,-1,1,  1,-1,-1,  1,1,-1,        // v0-v3-v4-v5
@@ -410,16 +373,6 @@ class OpenGLViewListener implements GLEventListener
 			texCoords.put(java_tex_coords[i]);
 		}
 		texCoords.rewind();
-		
-		
-		// normal array
-		float java_normals[] = {0,0,1,  0,0,1,  0,0,1,  0,0,1,             // v0-v1-v2-v3
-		                     1,0,0,  1,0,0,  1,0,0, 1,0,0,              // v0-v3-v4-v5
-		                     0,1,0,  0,1,0,  0,1,0, 0,1,0,              // v0-v5-v6-v1
-		                     -1,0,0,  -1,0,0, -1,0,0,  -1,0,0,          // v1-v6-v7-v2
-		                     0,-1,0,  0,-1,0,  0,-1,0,  0,-1,0,         // v7-v4-v3-v2
-		                     0,0,-1,  0,0,-1,  0,0,-1,  0,0,-1};        // v4-v7-v6-v5
-		normals = FloatArrayToFloatBuffer(java_normals);
 	}
 	
 	private static FloatBuffer FloatArrayToFloatBuffer(float[] array)

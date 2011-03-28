@@ -11,34 +11,24 @@ public class Controller
 	private static UserInputView UIView;
 	private static OpenGLView    GLView;
 	private static DatabaseHandlerModel dbHandler;
-	private static boolean askingQuestion;
 	
 	public Controller()
 	{
 		dbHandler = new DatabaseHandlerModel();
-		
-		//GuessModel[] guesses = new GuessModel[1];
-		//guesses[0] = dbHandler.queryForGuessModelByName("YDogGuess");
 
 		
 		UIView = new UserInputView();
 		UIView.enableButtons();
 		UIView.show();
 
-		//UIView.onGuess(guesses[0]);
 		
 		GLView = new OpenGLView(dbHandler.queryForAllGuessModels());
-		//GLView.LoadGuessTexture(guesses[0]);
-		
 
-		//sendGuessToUI(guesses[0]);
-		//sendGuessToGL(guesses[0]);
 		
 		//the name of the first question if "VertQ" for VertebrateQuestion
 		QuestionModel firstQuestion = dbHandler.queryForQuestionModelByName(
 												"VertQ");
 		sendQuestionToUI(firstQuestion);
-		askingQuestion = true;
 		
 	}
 	
@@ -61,23 +51,7 @@ public class Controller
 	{
 		GLView.LoadQuestionTexture();
 	}
-	/*
-	public static void receiveAnswerFromUI(boolean answer)
-	{
-		if(answer)
-		{
-			//we're asking a question
-			if(askingQuestion)
-			{
-				
-			}
-		}
-		if(!answer)
-		{
-			//act on NO
-		}
-	}
-	*/
+
 	
 	/**
 	 * Called when receiving the answer to a question from the user

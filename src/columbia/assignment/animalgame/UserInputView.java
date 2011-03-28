@@ -2,7 +2,6 @@ package columbia.assignment.animalgame;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,8 +12,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -239,7 +236,7 @@ public class UserInputView
 	public void onGuess(GuessModel guess)
 	{			
 		String animal_name = guess.getAnimalName();
-		textLabel.setText("<HTML><p style = 'font-size:18px'>Is it a " + animal_name + "?</p></HTML>");
+		textLabel.setText("<HTML><p style = 'font-size:13px'>Is it a " + animal_name + "?</p></HTML>");
 		//set state
 		CURRENT_STATE = GUESS;
 		currentQuestion = null;
@@ -252,7 +249,7 @@ public class UserInputView
 	 */
 	public void onQuestion(QuestionModel question)
 	{
-		textLabel.setText(question.getQuestion());
+		textLabel.setText("<HTML><p style = 'font-size:13px'>"+question.getQuestion()+"</p></HTML>");
 		//set state
 		CURRENT_STATE = QUESTION;
 		currentGuess = null;
