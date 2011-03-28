@@ -1,7 +1,6 @@
 package columbia.assignment.animalgame;
 
 
-import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -17,8 +16,6 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.BufferUtil;
