@@ -10,8 +10,14 @@ public class Main
 {
 	public static void main(String[] args)
 	{
-		Controller controller = new Controller();
-		DatabaseHandlerModel dbhandler = new DatabaseHandlerModel();
+		new Controller();
 	}
+}
 
+class IntroMessage
+{
+	public IntroMessage()
+	{
+		
+	}
 }
